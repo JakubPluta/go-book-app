@@ -9,7 +9,9 @@ import (
 
 
 type Config struct {
+	Debug bool `env:"DEBUG,required"`
 	Server serverConfig
+	
 }
 
 type serverConfig struct {
