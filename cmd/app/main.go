@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"myapp/config"
+	"myapp/server/router"
 	"net/http"
 )
 
@@ -11,14 +12,13 @@ import (
 func main() {
 
 	appConf := config.AppConfig()
+	appRouter := router.New()
 
-    mux := http.NewServeMux()
-    mux.HandleFunc("/", Greeting)
     address := fmt.Sprintf(":%d", appConf.Server.Port)
     log.Printf("Starting server %s\n", address)
     s := &http.Server{
         Addr:         address,
-        Handler:      mux,
+        Handler:      appRouter,
         ReadTimeout:  appConf.Server.TimeoutRead,
         WriteTimeout: appConf.Server.TimeoutWrite,
         IdleTimeout:  appConf.Server.TimeoutIdle,
