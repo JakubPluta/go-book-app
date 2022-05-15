@@ -2,21 +2,30 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-
+	dbConn "myapp/adapter/gorm"
 	"myapp/app/app"
 	"myapp/app/router"
 	"myapp/config"
 	lr "myapp/util/logger"
+	"net/http"
 )
 
 func main() {
 	appConf := config.AppConfig()
 
 	logger := lr.New(appConf.Debug)
+	db, err := dbConn.New(appConf)
+	if err != nil {
+		logger.Fatal().Err(err).Msg("")
+		return
+	}
 
-	application := app.New(logger)
+	if appConf.Debug {
+        db.LogMode(true)
+    }
 
+	application := app.New(logger, db)
+	
 	appRouter := router.New(application)
 
 	address := fmt.Sprintf(":%d", appConf.Server.Port)
